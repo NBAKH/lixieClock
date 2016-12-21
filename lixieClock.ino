@@ -5,24 +5,44 @@
 
 
 #include <ESP8266WiFi.h>
-#include <Wire.h>
+//#include <Wire.h>
+
+#include <Adafruit_DotStar.h>
+#include <SPI.h>
+
+#define NUMPIXELS 30
+
+#define DATAPIN    MOSI
+#define CLOCKPIN   SCK
+Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DATAPIN, CLOCKPIN);
 
 
-const char* ssid     = "KryptiskEgyptisk";
-const char* password = "CDF9FF1567";
+
+// const char* ssid     = "KryptiskEgyptisk";
+// const char* password = "CDF9FF1567";
+
+const char* ssid     = "ddlabwifi_5G";
+const char* password = "balddbaldd";
+
 // const char* host = "utcnist2.colorado.edu";
 const char* host = "129.6.15.30";
 //http://tf.nist.gov/tf-cgi/servers.cgi
+//dk.pool.ntp.org
+uint32_t color = 0xFF0000;
 
 int ln = 0;
 String TimeDate = "";
-
+int clock0;
+int clock1;
+int clock2;
+int clock3;
 
 void setup() {
   Serial.begin(115200);                   // diagnostic channel
   //Serial.begin(74880);
   delay(10);
-
+  strip.begin();
+  strip.show();
   // We start by connecting to a WiFi network
 
   Serial.println();
@@ -37,8 +57,8 @@ void setup() {
   delay(100);
 
   //Wire.pins(int sda, int scl), etc
-  Wire.pins(0, 2);                        //on ESP-01.
-  Wire.begin();
+  // Wire.pins(0, 2);                        //on ESP-01.
+  // Wire.begin();
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -99,21 +119,58 @@ void loop()
       // TimeDate.toCharArray(buffer, 10);
       // Serial.println(TimeDate);
       //sendStrXY(buffer, 6, 0);
-      int clock0 = line.substring(16,17).toInt();
-      Serial.print("first: ");
-      Serial.println(clock0);
-      int clock1 = 1+line.substring(17,18).toInt();
-      Serial.print("second: ");
-      Serial.println(clock1);
-      int clock2 = line.substring(19,20).toInt();
-      Serial.print("third: ");
-      Serial.println(clock2);
-      int clock3 = line.substring(20,21).toInt();
-      Serial.print("fourth: ");
-      Serial.println(clock3);
+      clock0 = line.substring(16,17).toInt();
+      clock1 = 1+line.substring(17,18).toInt();
+      clock2 = line.substring(19,20).toInt();
+      clock3 = line.substring(20,21).toInt();
     }
   }
 
   Serial.println();
   Serial.println("closing connection");
+  light();
+}
+
+void light(){
+  strip.clear();
+  clock(clock0,1);
+  clock(clock1,4);
+  clock(clock2,14);
+  clock(clock3,21);
+  strip.show();
+}
+
+void clock(int time, int stripPlace){
+  switch(time){
+    case 0:
+      strip.setPixelColor(stripPlace, color);
+      break;
+    case 1:
+      strip.setPixelColor(1+stripPlace, color);
+      break;
+    case 2:
+      strip.setPixelColor(2+stripPlace, color);
+      break;
+    case 3:
+      strip.setPixelColor(3+stripPlace, color);
+      break;
+    case 4:
+      strip.setPixelColor(4+stripPlace, color);
+      break;
+    case 5:
+      strip.setPixelColor(5+stripPlace, color);
+      break;
+    case 6:
+      strip.setPixelColor(6+stripPlace, color);
+      break;
+    case 7:
+      strip.setPixelColor(7+stripPlace, color);
+      break;
+    case 8:
+      strip.setPixelColor(8+stripPlace, color);
+      break;
+    case 9:
+      strip.setPixelColor(9+stripPlace, color);
+      break;
+  }
 }
